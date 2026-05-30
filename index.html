@@ -2,13 +2,14 @@
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
+  <!-- Icona per a la pestanya del navegador (Cor groc centrat) -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><text x=%2210%22 y=%2295%22 font-size=%2290%22>💛</text></svg>">
+
+<!-- Icona per a la pantalla d'inici del mòbil (Cor groc centrat) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><text x=%2210%22 y=%2295%22 font-size=%2290%22>💛</text></svg>">
+</head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Seguiment Parella</title>
-  
-  <!-- El cor groc que volies -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><text x=%2210%22 y=%2295%22 font-size=%2290%22>💛</text></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><text x=%2210%22 y=%2295%22 font-size=%2290%22>💛</text></svg>">
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
@@ -17,320 +18,541 @@
     .header h1 { font-size: 22px; font-weight: 600; color: #0f172a; }
     .live-badge { background: #dcfce7; color: #166534; font-size: 11px; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 6px; }
     .card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-    .card h2 { font-size: 14px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
-    
-    /* BOTÓ PRINCIPAL (Original d'en Claude) */
-    .btn-principal { width: 100%; padding: 1rem; font-size: 16px; font-weight: 600; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; background: #ef4444; color: white; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2); }
-    .btn-principal:active { transform: scale(0.98); }
-    .btn-principal.ja-registrat { background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; box-shadow: none; cursor: default; }
-    .status-msg { text-align: center; font-size: 13px; margin-top: 6px; min-height: 18px; font-weight: 500; }
-    .status-msg.error { color: #ef4444; }
-    .status-msg.success { color: #10b981; }
-
-    /* FILTRE ANY */
-    .selector-any { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-    .selector-any span { font-weight: 600; color: #334155; }
-    select { padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-size: 14px; font-weight: 500; color: #334155; outline: none; }
-
-    /* STATS */
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
-    .stat-box { background: #f1f5f9; padding: 0.75rem; border-radius: 10px; text-align: center; }
-    .stat-val { font-size: 22px; font-weight: 700; color: #0f172a; }
-    .stat-lbl { font-size: 11px; color: #64748b; margin-top: 2px; font-weight: 500; }
-
-    /* GRÀFICA (Original arreglada per no desbordar) */
-    .grafica-contenidor { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-    .barra-fila { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-    .barra-nom { width: 35px; color: #475569; font-weight: 500; }
-    .barra-fons { background: #e2e8f0; flex-grow: 1; height: 16px; border-radius: 4px; overflow: hidden; position: relative; max-width: calc(100% - 75px); } /* Línia corregida */
-    .barra-color { background: #ef4444; height: 100%; border-radius: 4px; transition: width 0.3s ease; }
-    .barra-num { width: 25px; text-align: right; color: #0f172a; font-weight: 600; }
-
-    /* CALENDARI */
-    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-    .cal-titol { font-size: 15px; font-weight: 600; color: #334155; }
-    .cal-nav { background: none; border: none; font-size: 16px; cursor: pointer; color: #64748b; padding: 4px 8px; }
-    .cal-dies-nom { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; font-weight: 600; color: #94a3b8; margin-bottom: 4px; }
-    .cal-quadricula { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-    .cal-dia { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; border-radius: 8px; color: #334155; position: relative; cursor: pointer; }
-    .cal-dia.fora { color: #cbd5e1; cursor: default; }
-    .cal-dia.intim { background: #fee2e2; color: #991b1b; font-weight: 700; border: 1px solid #fca5a5; }
-    .cal-dia.intim::after { content: '❤️'; font-size: 9px; position: absolute; bottom: 1px; }
-    .cal-dia.periode-predit { background: #f3e8ff; color: #6b21a8; border: 1px dashed #c084fc; }
-    .cal-dia.avui { border: 2px solid #3b82f6; }
-
-    .llegenda { display: flex; gap: 12px; font-size: 11px; font-weight: 500; color: #64748b; justify-content: center; margin-top: 10px; }
-    .llegenda-item { display: flex; align-items: center; gap: 4px; }
-    .ll-punt { width: 10px; height: 10px; border-radius: 3px; }
-    .selector-usuari { display: flex; justify-content: center; gap: 8px; margin-top: 0.5rem; }
-    .btn-usuari { background: #e2e8f0; border: none; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; }
-    .btn-usuari.actiu { background: #334155; color: white; }
-    
-    .consell-text { font-size: 13px; line-height: 1.4; color: #475569; font-style: italic; background: #fffbeb; padding: 10px; border-radius: 8px; border-left: 3px solid #f59e0b; }
+    .card-title { font-size: 11px; font-weight: 600; color: #94a3b8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .stat { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .stat-num { font-size: 28px; font-weight: 600; }
+    .stat-label { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .cal-nav button { background: none; border: 1px solid #e2e8f0; border-radius: 8px; padding: 5px 12px; cursor: pointer; color: #1e293b; font-size: 14px; }
+    .cal-nav button:hover { background: #f1f5f9; }
+    .cal-month { font-size: 16px; font-weight: 600; color: #0f172a; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-day-name { text-align: center; font-size: 11px; color: #94a3b8; font-weight: 600; padding: 4px 0; }
+    .cal-day { text-align: center; padding: 5px 2px; border-radius: 8px; font-size: 13px; cursor: pointer; color: #1e293b; min-height: 36px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; transition: background 0.15s; }
+    .cal-day:hover { background: #f1f5f9; }
+    .cal-day.today { font-weight: 700; border: 1.5px solid #D4537E; }
+    .cal-day.empty { cursor: default; pointer-events: none; }
+    .cal-day.selected { outline: 2px solid #94a3b8; font-weight: 600; }
+    .cal-day.dia-intim { background: #dcfce7; color: #166534; font-weight: 600; }
+    .cal-day.dia-intim:hover { background: #bbf7d0; }
+    .cal-day.dia-periode { background: #fee2e2; color: #991b1b; font-weight: 600; }
+    .cal-day.dia-periode:hover { background: #fecaca; }
+    .cal-day.dia-predit { background: #fff0f0; color: #c07070; border: 1px dashed #f0a0a0; }
+    .cal-day.dia-predit:hover { background: #ffe4e4; }
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-intim { background: #D4537E; color: white; border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn-intim:hover { background: #b03468; }
+    .btn-periode { background: #e05555; color: white; border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn-periode:hover { background: #c03030; }
+    .btn-esborrar { background: none; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; font-size: 13px; color: #64748b; cursor: pointer; grid-column: 1/-1; transition: background 0.15s; }
+    .btn-esborrar:hover { background: #f8fafc; }
+    .llegenda { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .llegenda-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #64748b; }
+    .log-list { max-height: 200px; overflow-y: auto; }
+    .log-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f1f5f9; }
+    .log-item:last-child { border-bottom: none; }
+    .log-badge { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .log-text { font-size: 13px; color: #1e293b; flex: 1; }
+    .log-date { font-size: 11px; color: #94a3b8; }
+    .selected-info { background: #f8fafc; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 13px; color: #64748b; text-align: center; }
+    .chart-container { margin-bottom: 1.5rem; }
+    .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .chart-title { font-size: 12px; font-weight: 600; color: #0f172a; }
+    .chart-nav { display: flex; gap: 4px; }
+    .chart-nav button { background: none; border: 1px solid #e2e8f0; border-radius: 6px; padding: 3px 8px; cursor: pointer; color: #1e293b; font-size: 12px; }
+    .chart-nav button:hover { background: #f1f5f9; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 80px; justify-content: center; }
+    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0px; max-width: 35px; }
+    .bar-num { font-size: 7px; color: #0f172a; font-weight: 600; height: 8px; line-height: 8px; }
+    .bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.4s; }
+    .bar-label { font-size: 7px; color: #94a3b8; text-align: center; }
+    .status { font-size: 12px; color: #64748b; text-align: center; padding: 6px 0; min-height: 24px; }
+    .status.error { color: #dc2626; }
+    .status.ok { color: #16a34a; }
+    .btn-avui { width: 100%; background: linear-gradient(135deg, #D4537E, #e87fa8); color: white; border: none; border-radius: 14px; padding: 18px; font-size: 17px; font-weight: 700; cursor: pointer; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(212,83,126,0.3); transition: transform 0.15s, box-shadow 0.15s; }
+    .btn-avui:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,83,126,0.4); }
+    .btn-avui:active { transform: scale(0.98); }
+    .btn-avui.ja-registrat { background: linear-gradient(135deg, #16a34a, #22c55e); box-shadow: 0 4px 15px rgba(22,163,74,0.3); }
+    .status-avui { font-size: 12px; text-align: center; color: #64748b; margin-top: -8px; margin-bottom: 12px; min-height: 18px; }
+    .propera-regla { background: #fff5f5; border: 1px solid #fecaca; border-radius: 10px; padding: 10px 14px; margin-bottom: 1rem; font-size: 13px; color: #991b1b; text-align: center; }
+    .propera-regla strong { font-weight: 700; }
+    .card-consell { background: linear-gradient(135deg, #fdf4ff, #fce7f3); border: 1px solid #f0abfc; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .card-consell .card-title { color: #a21caf; }
+    .consell-fase { font-size: 13px; font-weight: 700; color: #86198f; margin-bottom: 6px; }
+    .consell-text { font-size: 13px; color: #3b0764; line-height: 1.7; }
+    .card-usuario { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 1px solid #bae6fd; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .card-usuario .card-title { color: #0369a1; }
+    .usuario-info { background: white; border: 1px solid #7dd3fc; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 13px; color: #0c4a6e; }
+    .usuario-input { width: 100%; padding: 10px 12px; border: 1px solid #bae6fd; border-radius: 8px; font-size: 13px; margin-bottom: 8px; }
+    .usuario-input:focus { outline: none; border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.1); }
+    .usuario-btn { width: 100%; background: #0284c7; color: white; border: none; border-radius: 8px; padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .usuario-btn:hover { background: #0369a1; }
   </style>
 </head>
 <body>
-
 <div class="app">
   <div class="header">
-    <h1>Seguiment Actiu</h1>
-    <div class="live-badge">✓ Sincronitzat al núvol</div>
+    <h1>❤️ Seguiment Parella</h1>
+    <div class="live-badge">☁️ Connectat a Supabase</div>
+  </div>
+
+  <button class="btn-avui" id="btn-avui" onclick="registrarAvui()">❤️ Trobada avui!</button>
+  <div class="status-avui" id="status-avui"></div>
+
+  <div id="propera-regla-box" style="display:none" class="propera-regla"></div>
+
+  <div class="card-consell">
+    <div class="card-title">✨ Com està ella avui?</div>
+    <div class="consell-fase" id="consell-fase" style="display:none"></div>
+    <div class="consell-text" id="consell-text" style="display:none"></div>
+    <div id="consell-no-data" style="font-size:13px; color:#a21caf; font-style:italic;">Registra algun dia de regla per obtenir consells personalitzats.</div>
   </div>
 
   <div class="card">
-    <button id="btn-avui" class="btn-principal" onclick="registrarAvui()">❤️ Trobada avui!</button>
-    <div id="status-avui" class="status-msg"></div>
-  </div>
-
-  <div class="card">
-    <div class="selector-any">
-      <h2>Estadístiques</h2>
-      <select id="any-filter" onchange="canviAny()"></select>
-    </div>
+    <div class="card-title">📊 Estadístiques</div>
     <div class="stats-grid">
-      <div class="stat-box">
-        <div id="stat-total" class="stat-val">0</div>
-        <div class="stat-lbl">Trobades totals</div>
+      <div class="stat">
+        <div class="stat-num" id="stat-mes" style="color:#D4537E">—</div>
+        <div class="stat-label">Aquest Mes</div>
       </div>
-      <div class="stat-box">
-        <div id="stat-mitjana" class="stat-val">0</div>
-        <div class="stat-lbl">Mitjana mensual</div>
+      <div class="stat">
+        <div class="stat-num" id="stat-any" style="color:#D4537E">—</div>
+        <div class="stat-label">Aquest Any</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-mitjana" style="color:#8b5cf6">—</div>
+        <div class="stat-label">Mitjana/Mes</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-diafavorit" style="color:#0ea5e9">—</div>
+        <div class="stat-label">Dia Popular</div>
       </div>
     </div>
-    <div id="grafica-mesos" class="grafica-contenidor"></div>
   </div>
 
   <div class="card">
-    <div class="cal-header">
-      <button class="cal-nav" onclick="mesAnterior()">◀</button>
-      <div id="cal-mes-titol" class="cal-titol"></div>
-      <button class="cal-nav" onclick="mesSeguent()">▶</button>
+    <div class="cal-nav">
+      <button onclick="canviMes(-1)">&#8249;</button>
+      <span class="cal-month" id="cal-title"></span>
+      <button onclick="canviMes(1)">&#8250;</button>
     </div>
-    <div class="cal-dies-nom">
-      <div>dl</div><div>dt</div><div>dc</div><div>dj</div><div>dv</div><div>ds</div><div>dg</div>
-    </div>
-    <div id="cal-quadricula" class="cal-quadricula"></div>
+    <div class="cal-grid" id="cal-grid"></div>
     <div class="llegenda">
-      <div class="llegenda-item"><div class="ll-punt" style="background:#fee2e2; border:1px solid #fca5a5;"></div> Trobada</div>
-      <div class="llegenda-item"><div class="ll-punt" style="background:#f3e8ff; border:1px dashed #c084fc;"></div> Regla (Predit)</div>
+      <div class="llegenda-item"><div style="width:13px;height:13px;border-radius:3px;background:#dcfce7;border:1px solid #16a34a"></div> Trobada</div>
+      <div class="llegenda-item"><div style="width:13px;height:13px;border-radius:3px;background:#fee2e2;border:1px solid #dc2626"></div> Regla real</div>
+      <div class="llegenda-item"><div style="width:13px;height:13px;border-radius:3px;background:#fff0f0;border:1px dashed #f0a0a0"></div> Regla predita</div>
     </div>
   </div>
 
   <div class="card">
-    <h2>Estat del Cicle i Consell</h2>
-    <div id="consell-cos" class="consell-text">Carregant dades del cicle...</div>
+    <div class="card-title">Registrar dia seleccionat</div>
+    <div class="selected-info" id="sel-info">Selecciona un dia al calendari</div>
+    <div class="btn-row">
+      <button class="btn-intim" onclick="registrar('intim')">❤️ Trobada íntima</button>
+      <button class="btn-periode" onclick="registrar('periode')">🩸 Dia de període</button>
+      <button class="btn-esborrar" onclick="esborrar()">🗑️ Esborrar</button>
+    </div>
+    <div class="status" id="status"></div>
   </div>
 
-  <div class="selector-usuari">
-    <button id="u-marti" class="btn-usuari actiu" onclick="canviUsuari('Martí')">Martí</button>
-    <button id="u-helena" class="btn-usuari" onclick="canviUsuari('Helena')">Helena</button>
+  <div class="card">
+    <div class="chart-container">
+      <div class="chart-header">
+        <span class="chart-title">Trobades per mes</span>
+        <div class="chart-nav">
+          <button onclick="canviMesChart(-1)">◀</button>
+          <button onclick="canviMesChart(1)">▶</button>
+        </div>
+      </div>
+      <div class="chart-bars" id="chart-bars-mesos"></div>
+    </div>
+
+    <div class="chart-container">
+      <div class="chart-header">
+        <span class="chart-title">Trobades per any</span>
+        <div class="chart-nav">
+          <button onclick="canviAnyChart(-1)">◀</button>
+          <button onclick="canviAnyChart(1)">▶</button>
+        </div>
+      </div>
+      <div class="chart-bars" id="chart-bars-anys"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Historial recent</div>
+    <div class="log-list" id="log-list"><div style="text-align:center;color:#94a3b8;font-size:13px;padding:16px 0">Carregant...</div></div>
+  </div>
+
+  <div class="card-usuario">
+    <div class="card-title">👤 Usuari</div>
+    <div class="usuario-info" id="usuario-info">Usuari: <strong id="usuario-actual">—</strong></div>
+    <input type="text" class="usuario-input" id="usuario-input" placeholder="Entra el teu codi d'usuari (ex: marc, amic, etc)" maxlength="20">
+    <button class="usuario-btn" onclick="canviarUsuari()">Canviar Usuari</button>
   </div>
 </div>
 
 <script>
-  // Les teves credencials de Supabase reals
-  const SUPA_URL = "https://mbybvphxztjsrptazqge.supabase.co";
-  const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ieWJ2cGh4enRqc3JwdGF6cWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzYzMzQsImV4cCI6MjA5NTYxMjMzNH0.do9NgiXYPda8iV1N-CMepc4BnzOu5IpU5CNKct6kw7M";
-  
-  const HEADERS = { "apikey": SUPA_KEY, "Authorization": "Bearer " + SUPA_KEY, "Content-Type": "application/json" };
+  const SUPA_URL = 'https://mbybvphxztjsrptazqge.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ieWJ2cGh4enRqc3JwdGF6cWdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMzYzMzQsImV4cCI6MjA5NTYxMjMzNH0.do9NgiXYPda8iV1N-CMepc4BnzOu5IpU5CNKct6kw7M';
+  const HEADERS = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+
+  const CICLE_DIES = 23;
+  const DURADA_REGLA = 4;
 
   let dades = {};
-  let usuariActual = 'Martí';
-  const avui = new Date();
-  let anyActual = avui.getFullYear();
-  let mesVisualitzat = avui.getMonth();
-  let anyVisualitzat = avui.getFullYear();
+  let usuariActual = localStorage.getItem('seguiment-usuario') || 'usuari1';
+  let avui = new Date();
+  let mesActual = new Date(avui.getFullYear(), avui.getMonth(), 1);
+  let mesChartActual = new Date(avui.getFullYear(), avui.getMonth(), 1);
+  let anyChartActual = new Date(avui.getFullYear(), 0, 1);
+  let diaSeleccionat = null;
 
-  const mesosNoms = ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"];
-
-  window.onload = async function() {
-    poblarAnys();
-    await carregarDadesBD();
-    calcularPrediccions();
-    renderTot();
-  };
-
-  function poblarAnys() {
-    const sel = document.getElementById('any-filter');
-    for(let a = anyActual; a >= anyActual - 2; a--) {
-      let o = document.createElement('option'); o.value = a; o.textContent = a; sel.appendChild(o);
-    }
-  }
-
-  async function carregarDadesBD() {
-    try {
-      const r = await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&select=*', { method: 'GET', headers: HEADERS });
-      if(!r.ok) throw new Error();
-      const llista = await r.json();
-      dades = {};
-      llista.forEach(i => { dades[i.data] = i.tipus; });
-    } catch(e) {
-      document.getElementById('status-avui').textContent = "Error de connexió amb la base de dades.";
-    }
-  }
+  const mesos = ['Gener','Febrer','Març','Abril','Maig','Juny','Juliol','Agost','Setembre','Octubre','Novembre','Desembre'];
+  const diesSetmana = ['Dl','Dt','Dc','Dj','Dv','Ds','Dg'];
+  const diesNom = ['Diumenge','Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte'];
 
   function clauData(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function dataDeClau(clau) {
+    const [y, m, d] = clau.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  function setStatus(msg, tipus) {
+    const el = document.getElementById('status');
+    el.textContent = msg;
+    el.className = 'status' + (tipus ? ' ' + tipus : '');
+    if (tipus === 'ok') setTimeout(() => { el.textContent = ''; el.className = 'status'; }, 2000);
+  }
+
+  function canviarUsuari() {
+    const input = document.getElementById('usuario-input').value.trim();
+    if (!input) { alert('Entra un codi d\'usuari'); return; }
+    usuariActual = input;
+    localStorage.setItem('seguiment-usuario', usuariActual);
+    document.getElementById('usuario-input').value = '';
+    document.getElementById('usuario-actual').textContent = usuariActual;
+    carregarDades();
+  }
+
+  function obtenirPrimeraTrobada() {
+    const trobades = Object.keys(dades).filter(c => dades[c] === 'intim').sort();
+    return trobades.length > 0 ? dataDeClau(trobades[0]) : null;
   }
 
   function calcularPrediccions() {
-    for (let k in dades) { if(dades[k] === 'periode-predit') delete dades[k]; }
-    let clausIntimes = Object.keys(dades).filter(k => dades[k] === 'intim').sort();
-    if(clausIntimes.length < 2) return;
-
-    let darrere = new Date(clausIntimes[clausIntimes.length - 1]);
-    for(let i=1; i<=3; i++) {
-      let predit = new Date(darrere);
-      predit.setDate(predit.getDate() + (i * 28));
-      for(let j=0; j<4; j++) {
-        let pDia = new Date(predit); pDia.setDate(pDia.getDate() + j);
-        let c = clauData(pDia);
-        if(!dades[c]) dades[c] = 'periode-predit';
-      }
+    for (const clau of Object.keys(dades)) {
+      if (dades[clau] === 'periode-predit') delete dades[clau];
     }
-  }
-
-  function renderTot() {
-    renderBotoAvui();
-    renderEstadistiques();
-    renderCalendari();
-    renderConsell();
-  }
-
-  function renderBotoAvui() {
-    const clau = clauData(avui);
-    const btn = document.getElementById('btn-avui');
-    const info = document.getElementById('status-avui');
-    if (dades[clau] === 'intim') {
-      btn.textContent = '✓ Registrat avui';
-      btn.classList.add('ja-registrat');
-      info.textContent = 'Ja has guardat la trobada d’avui!';
-      info.className = "status-msg success";
-    } else {
-      btn.textContent = '❤️ Trobada avui!';
-      btn.classList.remove('ja-registrat');
-      info.textContent = '';
-    }
-  }
-
-  function renderEstadistiques() {
-    const anyFiltre = document.getElementById('any-filter').value;
-    let total = 0;
-    let mesosComptador = Array(12).fill(0);
-
-    for (let clau in dades) {
-      if (dades[clau] === 'intim' && clau.startsWith(anyFiltre)) {
-        total++;
-        let m = parseInt(clau.split('-')[1]) - 1;
-        mesosComptador[m]++;
-      }
-    }
-
-    document.getElementById('stat-total').textContent = total;
-    let mesosActius = anyFiltre == anyActual ? (avui.getMonth() + 1) : 12;
-    document.getElementById('stat-mitjana').textContent = (total / mesosActius).toFixed(1);
-
-    const maxMes = Math.max(...mesosComptador, 1);
-    let htmlGrafica = "";
-    mesosNoms.forEach((nom, idx) => {
-      let v = mesosComptador[idx];
-      let pct = (v / maxMes) * 100;
-      htmlGrafica += `
-        <div class="barra-fila">
-          <div class="barra-nom">${nom.substring(0,3)}</div>
-          <div class="barra-fons">
-            <div class="barra-color" style="width: ${pct}%"></div>
-          </div>
-          <div class="barra-num">${v}</div>
-        </div>`;
+    const diesPeriode = Object.keys(dades).filter(c => dades[c] === 'periode').sort();
+    if (diesPeriode.length === 0) return;
+    const primersDies = diesPeriode.filter(clau => {
+      const anterior = new Date(dataDeClau(clau).getTime() - 86400000);
+      return dades[clauData(anterior)] !== 'periode';
     });
-    document.getElementById('grafica-mesos').innerHTML = htmlGrafica;
+    if (primersDies.length === 0) return;
+    const ultimPrimer = dataDeClau(primersDies[primersDies.length - 1]);
+    for (let cicle = 1; cicle <= 6; cicle++) {
+      const iniciCicle = new Date(ultimPrimer.getTime() + cicle * CICLE_DIES * 86400000);
+      for (let d = 0; d < DURADA_REGLA; d++) {
+        const dia = new Date(iniciCicle.getTime() + d * 86400000);
+        const clau = clauData(dia);
+        if (!dades[clau]) dades[clau] = 'periode-predit';
+      }
+    }
+  }
+
+  function calcularFaseCicle() {
+    const diesPeriode = Object.keys(dades).filter(c => dades[c] === 'periode').sort();
+    if (diesPeriode.length === 0) return null;
+    const primersDies = diesPeriode.filter(clau => {
+      const anterior = new Date(dataDeClau(clau).getTime() - 86400000);
+      return dades[clauData(anterior)] !== 'periode';
+    });
+    if (primersDies.length === 0) return null;
+    const ultimPrimer = dataDeClau(primersDies[primersDies.length - 1]);
+    const avuiMs = new Date(avui.getFullYear(), avui.getMonth(), avui.getDate());
+    const diesDesDeRegla = Math.round((avuiMs - ultimPrimer) / 86400000);
+    const diaDelCicle = ((diesDesDeRegla % CICLE_DIES) + CICLE_DIES) % CICLE_DIES + 1;
+
+    let fase, emoji, consell;
+    if (diaDelCicle <= 4) { fase = 'Fase menstrual'; emoji = '🩸'; consell = 'Es pot sentir més sensible, cansada i amb dolor. Acompanya-la, ofereix-li amor i descans. Un massatge suau o una infusió calenta la farà sentir cuidada.'; }
+    else if (diaDelCicle <= 8) { fase = 'Fase fol·licular primerenca'; emoji = '🌱'; consell = 'L\'energia comença a pujar-se. Anima-la a fer activitats que li agrada. Una sortida o una activitat junts la farà sentir viva.'; }
+    else if (diaDelCicle <= 13) { fase = 'Fase fol·licular tardana'; emoji = '🌸'; consell = 'Està radianta i plena d\'energia. Per vosaltres, és un bon moment! Planifica alguna cosa especial i divertit junts.'; }
+    else if (diaDelCicle <= 15) { fase = 'Ovulació'; emoji = '✨'; consell = 'Al seu pic de confiança i atracció. Aprofita per estar més a prop, mostra la teva admiració i passió per ella.'; }
+    else if (diaDelCicle <= 19) { fase = 'Fase lútia primerenca'; emoji = '🌕'; consell = 'Està més calma i reflexiva. Parla amb ella, escolta els seus pensaments. La teva atenció emocional és més valuosa que mai.'; }
+    else { fase = 'Fase premenstrual'; emoji = '🌙'; consell = 'Pot sentir-se més irritable o melancòlica. Sé pacient, respecta els seus espais i ofereix el teu suport silenciós. Cuidar dels petits detalls la reconfortarà.'; }
+
+    return { diaDelCicle, fase, emoji, consell, diesDesDeRegla };
+  }
+
+  async function carregarDades() {
+    try {
+      const r = await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&select=data,tipus', { headers: HEADERS });
+      if (!r.ok) throw new Error(await r.text());
+      const rows = await r.json();
+      dades = {};
+      rows.forEach(row => { dades[row.data] = row.tipus; });
+      calcularPrediccions();
+      renderTot();
+    } catch (e) {
+      setStatus('Error carregant dades: ' + e.message, 'error');
+      document.getElementById('log-list').innerHTML = '<div style="text-align:center;color:#dc2626;font-size:13px;padding:16px 0">No s\'han pogut carregar les dades</div>';
+    }
+  }
+
+  async function registrar(tipus) {
+    if (!diaSeleccionat) { setStatus('Selecciona primer un dia', 'error'); return; }
+    setStatus('Guardant...');
+    const tipusActual = dades[diaSeleccionat];
+    const existeixBD = tipusActual && tipusActual !== 'periode-predit';
+    try {
+      if (existeixBD) {
+        const r = await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&data=eq.' + diaSeleccionat, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ tipus }) });
+        if (!r.ok) throw new Error(await r.text());
+      } else {
+        const r = await fetch(SUPA_URL + '/rest/v1/registres', { method: 'POST', headers: HEADERS, body: JSON.stringify({ user_id: usuariActual, data: diaSeleccionat, tipus }) });
+        if (!r.ok) throw new Error(await r.text());
+      }
+      dades[diaSeleccionat] = tipus;
+      calcularPrediccions();
+      setStatus('Guardat! ✓', 'ok');
+      renderTot();
+      seleccionarDia(diaSeleccionat);
+    } catch (e) { setStatus('Error: ' + e.message, 'error'); }
+  }
+
+  async function esborrar() {
+    if (!diaSeleccionat) return;
+    const tipusActual = dades[diaSeleccionat];
+    if (!tipusActual || tipusActual === 'periode-predit') { setStatus('No hi ha res a esborrar', 'error'); return; }
+    setStatus('Esborrant...');
+    try {
+      const r = await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&data=eq.' + diaSeleccionat, { method: 'DELETE', headers: HEADERS });
+      if (!r.ok) throw new Error(await r.text());
+      delete dades[diaSeleccionat];
+      calcularPrediccions();
+      setStatus('Esborrat! ✓', 'ok');
+      renderTot();
+      seleccionarDia(diaSeleccionat);
+    } catch (e) { setStatus('Error: ' + e.message, 'error'); }
+  }
+
+  function canviMes(dir) { mesActual = new Date(mesActual.getFullYear(), mesActual.getMonth() + dir, 1); renderCalendari(); }
+  function canviMesChart(dir) { mesChartActual = new Date(mesChartActual.getFullYear(), mesChartActual.getMonth() + dir, 1); renderChartMesos(); }
+  function canviAnyChart(dir) { anyChartActual = new Date(anyChartActual.getFullYear() + dir, 0, 1); renderChartAnys(); }
+
+  function seleccionarDia(clau) {
+    diaSeleccionat = clau;
+    const [any, mes, dia] = clau.split('-');
+    const tipus = dades[clau];
+    let etiqueta = 'sense registre';
+    if (tipus === 'intim') etiqueta = 'Trobada íntima';
+    else if (tipus === 'periode') etiqueta = 'Dia de període';
+    else if (tipus === 'periode-predit') etiqueta = '🔮 Període predit';
+    document.getElementById('sel-info').textContent = dia + '/' + mes + '/' + any + ' — ' + etiqueta;
+    renderCalendari();
   }
 
   function renderCalendari() {
-    document.getElementById('cal-mes-titol').textContent = `${mesosNoms[mesVisualitzat]} ${anyVisualitzat}`;
-    const q = document.getElementById('cal-quadricula');
-    q.innerHTML = "";
-
-    let primerDiaMes = new Date(anyVisualitzat, mesVisualitzat, 1).getDay();
-    let diesEnMes = new Date(anyVisualitzat, mesVisualitzat + 1, 0).getDate();
-    let iniciEspais = primerDiaMes === 0 ? 6 : primerDiaMes - 1;
-
-    let diesMesAnterior = new Date(anyVisualitzat, mesVisualitzat, 0).getDate();
-    for (let i = iniciEspais - 1; i >= 0; i--) {
-      let d = document.createElement('div'); d.className = "cal-dia fora"; d.textContent = diesMesAnterior - i; q.appendChild(d);
-    }
-
-    for (let i = 1; i <= diesEnMes; i++) {
-      let d = document.createElement('div'); d.className = "cal-dia"; d.textContent = i;
-      let dataObjecte = new Date(anyVisualitzat, mesVisualitzat, i);
-      let clau = clauData(dataObjecte);
-
-      if (dades[clau] === 'intim') d.classList.add('intim');
-      if (dades[clau] === 'periode-predit') d.classList.add('periode-predit');
-      if (clau === clauData(avui)) d.classList.add('avui');
-
-      d.onclick = () => alternarDia(dataObjecte);
-      q.appendChild(d);
+    document.getElementById('cal-title').textContent = mesos[mesActual.getMonth()] + ' ' + mesActual.getFullYear();
+    const grid = document.getElementById('cal-grid');
+    grid.innerHTML = '';
+    diesSetmana.forEach(d => { const el = document.createElement('div'); el.className = 'cal-day-name'; el.textContent = d; grid.appendChild(el); });
+    const primer = new Date(mesActual.getFullYear(), mesActual.getMonth(), 1);
+    let ds = primer.getDay(); ds = ds === 0 ? 6 : ds - 1;
+    for (let i = 0; i < ds; i++) { const el = document.createElement('div'); el.className = 'cal-day empty'; grid.appendChild(el); }
+    const diesMes = new Date(mesActual.getFullYear(), mesActual.getMonth() + 1, 0).getDate();
+    for (let d = 1; d <= diesMes; d++) {
+      const data = new Date(mesActual.getFullYear(), mesActual.getMonth(), d);
+      const clau = clauData(data);
+      const el = document.createElement('div');
+      el.className = 'cal-day';
+      if (clau === clauData(avui)) el.classList.add('today');
+      const tipus = dades[clau];
+      if (tipus === 'intim') el.classList.add('dia-intim');
+      else if (tipus === 'periode') el.classList.add('dia-periode');
+      else if (tipus === 'periode-predit') el.classList.add('dia-predit');
+      if (clau === diaSeleccionat) el.classList.add('selected');
+      const numEl = document.createElement('span'); numEl.textContent = d; el.appendChild(numEl);
+      el.onclick = () => seleccionarDia(clau);
+      grid.appendChild(el);
     }
   }
 
-  async function alternarDia(dataObj) {
-    const clau = clauData(dataObj);
-    const tipusActual = dades[clau];
-    try {
-      if (tipusActual === 'intim') {
-        delete dades[clau];
-        await fetch(`${SUPA_URL}/rest/v1/registres?user_id=eq.${usuariActual}&data=eq.${clau}`, { method: 'DELETE', headers: HEADERS });
-      } else {
-        dades[clau] = 'intim';
-        await fetch(`${SUPA_URL}/rest/v1/registres`, { method: 'POST', headers: HEADERS, body: JSON.stringify({ user_id: usuariActual, data: clau, tipus: 'intim' }) });
+  function renderStats() {
+    const clauMes = avui.getFullYear() + '-' + String(avui.getMonth() + 1).padStart(2, '0');
+    const anyActual = avui.getFullYear();
+    let mesCont = 0, anyCont = 0;
+
+    for (const [clau, tipus] of Object.entries(dades)) {
+      if (tipus === 'intim') {
+        const [y, m] = clau.split('-').map(Number);
+        if (clau.startsWith(clauMes)) mesCont++;
+        if (y === anyActual) anyCont++;
       }
-      calcularPrediccions(); renderTot();
-    } catch(e) {}
+    }
+
+    const mesesAmbDades = new Set();
+    for (const [clau, tipus] of Object.entries(dades)) {
+      if (tipus === 'intim') {
+        const [y, m] = clau.split('-');
+        mesesAmbDades.add(y + '-' + m);
+      }
+    }
+    const trobades = Object.keys(dades).filter(c => dades[c] === 'intim').length;
+    const mitjana = mesesAmbDades.size > 0 ? (trobades / mesesAmbDades.size).toFixed(1) : '—';
+
+    const diesSetmanaTrobades = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0 };
+    for (const [clau, tipus] of Object.entries(dades)) {
+      if (tipus === 'intim') {
+        const data = dataDeClau(clau);
+        diesSetmanaTrobades[data.getDay()]++;
+      }
+    }
+    const maxDia = Math.max(...Object.values(diesSetmanaTrobades));
+    let diafavorit = '—';
+    if (maxDia > 0) {
+      for (let i = 0; i < 7; i++) {
+        if (diesSetmanaTrobades[i] === maxDia) {
+          diafavorit = diesNom[i].substring(0, 3);
+          break;
+        }
+      }
+    }
+
+    document.getElementById('stat-mes').textContent = mesCont;
+    document.getElementById('stat-any').textContent = anyCont;
+    document.getElementById('stat-mitjana').textContent = mitjana;
+    document.getElementById('stat-diafavorit').textContent = diafavorit;
+  }
+
+  function renderProperaRegla() {
+    const box = document.getElementById('propera-regla-box');
+    const avuiClau = clauData(avui);
+    const predits = Object.keys(dades).filter(c => dades[c] === 'periode-predit' && c >= avuiClau).sort();
+    if (predits.length === 0) { box.style.display = 'none'; return; }
+    const primerPredit = predits[0];
+    const anterior = new Date(dataDeClau(primerPredit).getTime() - 86400000);
+    const esPrimer = dades[clauData(anterior)] !== 'periode-predit';
+    if (!esPrimer) { box.style.display = 'none'; return; }
+    const data = dataDeClau(primerPredit);
+    const avuiMs = new Date(avui.getFullYear(), avui.getMonth(), avui.getDate());
+    const dies = Math.round((data - avuiMs) / 86400000);
+    box.style.display = 'block';
+    if (dies === 0) box.innerHTML = '🩸 <strong>Avui</strong> és un dia predit de regla';
+    else if (dies === 1) box.innerHTML = '🩸 La propera regla és <strong>demà</strong>';
+    else box.innerHTML = '🩸 Propera regla prevista: <strong>' + data.getDate() + ' de ' + mesos[data.getMonth()] + '</strong> (en ' + dies + ' dies)';
   }
 
   function renderConsell() {
-    let text = "Mantingues el teu registre diari actiu per veure recomanacions basades en el cicle.";
-    let clausIntimes = Object.keys(dades).filter(k => dades[k] === 'intim').sort();
-    if (clausIntimes.length > 0) {
-      let ultima = new Date(clausIntimes[clausIntimes.length - 1]);
-      let difTemps = avui - ultima;
-      let diesPasats = Math.floor(difTemps / (1000 * 60 * 60 * 24));
-      
-      if(diesPasats <= 3) text = "✨ Fase òptima d'energia. Bon moment per fer activitat física de fons o plans dinàmics en parella.";
-      else if(diesPasats > 3 && diesPasats <= 10) text = "⚡ Dies de màxima productivitat i comunicació oberta. Ideal per connectar.";
-      else text = "🧘 Fase de relaxació i autocura recomanada. Prioritzeu descans i sopars tranquils a casa.";
+    const info = calcularFaseCicle();
+    const faseEl = document.getElementById('consell-fase');
+    const textEl = document.getElementById('consell-text');
+    const noDataEl = document.getElementById('consell-no-data');
+    
+    if (!info) {
+      faseEl.style.display = 'none';
+      textEl.style.display = 'none';
+      noDataEl.style.display = 'block';
+    } else {
+      noDataEl.style.display = 'none';
+      faseEl.style.display = 'block';
+      textEl.style.display = 'block';
+      faseEl.textContent = info.emoji + ' ' + info.fase + ' · Dia ' + info.diaDelCicle;
+      textEl.textContent = info.consell;
     }
-    document.getElementById('consell-cos').textContent = text;
+  }
+
+  function renderChartMesos() {
+    const container = document.getElementById('chart-bars-mesos');
+    container.innerHTML = '';
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(mesChartActual.getFullYear(), mesChartActual.getMonth() - i, 1);
+      const clauMes = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      let count = 0;
+      for (const [clau, tipus] of Object.entries(dades)) { if (clau.startsWith(clauMes) && tipus === 'intim') count++; }
+      const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
+      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 ? count : '';
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#D4537E'; bar.style.height = count > 0 ? Math.max(count * 12, 4) + 'px' : '3px'; bar.style.opacity = i === 0 ? '1' : '0.5';
+      const lbl = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = mesos[d.getMonth()].substring(0, 3);
+      wrap.appendChild(num); wrap.appendChild(bar); wrap.appendChild(lbl); container.appendChild(wrap);
+    }
+  }
+
+  function renderChartAnys() {
+    const container = document.getElementById('chart-bars-anys');
+    container.innerHTML = '';
+    for (let i = 5; i >= 0; i--) {
+      const any = anyChartActual.getFullYear() - i;
+      let count = 0;
+      for (const [clau, tipus] of Object.entries(dades)) { 
+        const y = parseInt(clau.split('-')[0]);
+        if (y === any && tipus === 'intim') count++;
+      }
+      const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
+      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 ? count : '';
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#8b5cf6'; bar.style.height = count > 0 ? Math.max(count * 3, 4) + 'px' : '3px'; bar.style.opacity = i === 0 ? '1' : '0.5';
+      const lbl = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = any;
+      wrap.appendChild(num); wrap.appendChild(bar); wrap.appendChild(lbl); container.appendChild(wrap);
+    }
+  }
+
+  function renderLog() {
+    const list = document.getElementById('log-list');
+    const entrades = Object.entries(dades).filter(([, t]) => t !== 'periode-predit').sort((a, b) => b[0].localeCompare(a[0])).slice(0, 15);
+    if (entrades.length === 0) { list.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:16px 0">Sense registres encara</div>'; return; }
+    const etiquetes = { intim: 'Trobada íntima', periode: 'Dia de període' };
+    const colors = { intim: '#16a34a', periode: '#dc2626' };
+    list.innerHTML = entrades.map(([clau, tipus]) => {
+      const [any, mes, dia] = clau.split('-');
+      return `<div class="log-item"><div class="log-badge" style="background:${colors[tipus]||'#94a3b8'}"></div><div class="log-text">${etiquetes[tipus]||tipus}</div><div class="log-date">${dia}/${mes}/${any}</div></div>`;
+    }).join('');
+  }
+
+  function actualitzarBotoAvui() {
+    const clau = clauData(avui);
+    const btn = document.getElementById('btn-avui');
+    const info = document.getElementById('status-avui');
+    if (dades[clau] === 'intim') { btn.textContent = '✓ Ja registrat avui!'; btn.classList.add('ja-registrat'); info.textContent = 'Trobada registrada per avui'; }
+    else { btn.textContent = '❤️ Trobada avui!'; btn.classList.remove('ja-registrat'); info.textContent = ''; }
   }
 
   async function registrarAvui() {
     const clau = clauData(avui);
-    if (dades[clau] === 'intim') return;
+    if (dades[clau] === 'intim') { document.getElementById('status-avui').textContent = 'Ja estava registrat!'; return; }
     const btn = document.getElementById('btn-avui');
     btn.textContent = 'Guardant...';
     try {
-      await fetch(SUPA_URL + '/rest/v1/registres', { method: 'POST', headers: HEADERS, body: JSON.stringify({ user_id: usuariActual, data: clau, tipus: 'intim' }) });
-      dades[clau] = 'intim'; calcularPrediccions(); renderTot();
-    } catch (e) { 
-      btn.textContent = '❤️ Trobada avui!'; 
-      document.getElementById('status-avui').textContent = 'Error de connexió.';
-    }
+      const existeixBD = dades[clau] && dades[clau] !== 'periode-predit';
+      if (existeixBD) {
+        const r = await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&data=eq.' + clau, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ tipus: 'intim' }) });
+        if (!r.ok) throw new Error(await r.text());
+      } else {
+        const r = await fetch(SUPA_URL + '/rest/v1/registres', { method: 'POST', headers: HEADERS, body: JSON.stringify({ user_id: usuariActual, data: clau, tipus: 'intim' }) });
+        if (!r.ok) throw new Error(await r.text());
+      }
+      dades[clau] = 'intim';
+      calcularPrediccions();
+      renderTot();
+    } catch (e) { btn.textContent = '❤️ Trobada avui!'; document.getElementById('status-avui').textContent = 'Error: ' + e.message; }
   }
 
-  function canviAny() { renderEstadistiques(); }
-  function mesAnterior() { mesVisualitzat--; if(mesVisualitzat < 0) { mesVisualitzat = 11; anyVisualitzat--; } renderCalendari(); }
-  function mesSeguent() { mesVisualitzat++; if(mesVisualitzat > 11) { mesVisualitzat = 0; anyVisualitzat++; } renderCalendari(); }
-  async function canviUsuari(u) {
-    usuariActual = u;
-    document.getElementById('u-marti').classList.toggle('actiu', u === 'Martí');
-    document.getElementById('u-helena').classList.toggle('actiu', u === 'Helena');
-    await carregarDadesBD(); calcularPrediccions(); renderTot();
+  function renderTot() {
+    renderCalendari();
+    renderStats();
+    renderChartMesos();
+    renderChartAnys();
+    renderLog();
+    actualitzarBotoAvui();
+    renderProperaRegla();
+    renderConsell();
   }
+
+  document.getElementById('usuario-actual').textContent = usuariActual;
+  carregarDades();
 </script>
 </body>
 </html>
