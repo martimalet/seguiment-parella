@@ -2,14 +2,9 @@
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
-  <!-- Icona per a la pestanya del navegador (Cor groc centrat) -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><text x=%2210%22 y=%2295%22 font-size=%2290%22>💛</text></svg>">
-
-<!-- Icona per a la pantalla d'inici del mòbil (Cor groc centrat) -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><text x=%2210%22 y=%2295%22 font-size=%2290%22>💛</text></svg>">
-</head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Seguiment Parella</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>💛</text></svg>">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
@@ -29,7 +24,7 @@
     .cal-month { font-size: 16px; font-weight: 600; color: #0f172a; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
     .cal-day-name { text-align: center; font-size: 11px; color: #94a3b8; font-weight: 600; padding: 4px 0; }
-    .cal-day { text-align: center; padding: 5px 2px; border-radius: 8px; font-size: 13px; cursor: pointer; color: #1e293b; min-height: 36px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; transition: background 0.15s; }
+    .cal-day { text-align: center; padding: 5px 2px; border-radius: 8px; font-size: 13px; cursor: pointer; color: #1e293b; min-height: 36px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; transition: background 0.15s; position: relative; }
     .cal-day:hover { background: #f1f5f9; }
     .cal-day.today { font-weight: 700; border: 1.5px solid #D4537E; }
     .cal-day.empty { cursor: default; pointer-events: none; }
@@ -40,6 +35,7 @@
     .cal-day.dia-periode:hover { background: #fecaca; }
     .cal-day.dia-predit { background: #fff0f0; color: #c07070; border: 1px dashed #f0a0a0; }
     .cal-day.dia-predit:hover { background: #ffe4e4; }
+    .cal-day.dia-ambos::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border: 2px dashed #dc2626; border-radius: 50%; pointer-events: none; }
     .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .btn-intim { background: #D4537E; color: white; border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
     .btn-intim:hover { background: #b03468; }
@@ -62,11 +58,12 @@
     .chart-nav { display: flex; gap: 4px; }
     .chart-nav button { background: none; border: 1px solid #e2e8f0; border-radius: 6px; padding: 3px 8px; cursor: pointer; color: #1e293b; font-size: 12px; }
     .chart-nav button:hover { background: #f1f5f9; }
-    .chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 80px; justify-content: center; }
-    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0px; max-width: 35px; }
-    .bar-num { font-size: 7px; color: #0f172a; font-weight: 600; height: 8px; line-height: 8px; }
-    .bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.4s; }
-    .bar-label { font-size: 7px; color: #94a3b8; text-align: center; }
+    .chart-wrapper { width: 100%; overflow-x: auto; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 2px; height: 70px; min-width: min-content; }
+    .bar-wrap { flex: 0 0 calc(100% / 6 - 2px); display: flex; flex-direction: column; align-items: center; gap: 0px; }
+    .bar-num { font-size: 6px; color: #0f172a; font-weight: 600; height: 6px; line-height: 6px; }
+    .bar { width: 100%; border-radius: 2px 2px 0 0; min-height: 1px; transition: height 0.4s; }
+    .bar-label { font-size: 6px; color: #94a3b8; text-align: center; margin-top: 1px; }
     .status { font-size: 12px; color: #64748b; text-align: center; padding: 6px 0; min-height: 24px; }
     .status.error { color: #dc2626; }
     .status.ok { color: #16a34a; }
@@ -141,6 +138,7 @@
     <div class="llegenda">
       <div class="llegenda-item"><div style="width:13px;height:13px;border-radius:3px;background:#dcfce7;border:1px solid #16a34a"></div> Trobada</div>
       <div class="llegenda-item"><div style="width:13px;height:13px;border-radius:3px;background:#fee2e2;border:1px solid #dc2626"></div> Regla real</div>
+      <div class="llegenda-item"><div style="width:13px;height:13px;border-radius:3px;background:#dcfce7;border:2px dashed #dc2626"></div> Ambdós</div>
       <div class="llegenda-item"><div style="width:13px;height:13px;border-radius:3px;background:#fff0f0;border:1px dashed #f0a0a0"></div> Regla predita</div>
     </div>
   </div>
@@ -165,7 +163,9 @@
           <button onclick="canviMesChart(1)">▶</button>
         </div>
       </div>
-      <div class="chart-bars" id="chart-bars-mesos"></div>
+      <div class="chart-wrapper">
+        <div class="chart-bars" id="chart-bars-mesos"></div>
+      </div>
     </div>
 
     <div class="chart-container">
@@ -176,7 +176,9 @@
           <button onclick="canviAnyChart(1)">▶</button>
         </div>
       </div>
-      <div class="chart-bars" id="chart-bars-anys"></div>
+      <div class="chart-wrapper">
+        <div class="chart-bars" id="chart-bars-anys"></div>
+      </div>
     </div>
   </div>
 
@@ -227,6 +229,13 @@
     if (tipus === 'ok') setTimeout(() => { el.textContent = ''; el.className = 'status'; }, 2000);
   }
 
+  function tensDias(clau) {
+    const val = dades[clau];
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    return [val];
+  }
+
   function canviarUsuari() {
     const input = document.getElementById('usuario-input').value.trim();
     if (!input) { alert('Entra un codi d\'usuari'); return; }
@@ -237,20 +246,17 @@
     carregarDades();
   }
 
-  function obtenirPrimeraTrobada() {
-    const trobades = Object.keys(dades).filter(c => dades[c] === 'intim').sort();
-    return trobades.length > 0 ? dataDeClau(trobades[0]) : null;
-  }
-
   function calcularPrediccions() {
     for (const clau of Object.keys(dades)) {
-      if (dades[clau] === 'periode-predit') delete dades[clau];
+      const tipos = tensDias(clau);
+      dades[clau] = tipos.filter(t => t !== 'periode-predit');
+      if (dades[clau].length === 0) delete dades[clau];
     }
-    const diesPeriode = Object.keys(dades).filter(c => dades[c] === 'periode').sort();
+    const diesPeriode = Object.keys(dades).filter(c => tensDias(c).includes('periode')).sort();
     if (diesPeriode.length === 0) return;
     const primersDies = diesPeriode.filter(clau => {
       const anterior = new Date(dataDeClau(clau).getTime() - 86400000);
-      return dades[clauData(anterior)] !== 'periode';
+      return !tensDias(clauData(anterior)).includes('periode');
     });
     if (primersDies.length === 0) return;
     const ultimPrimer = dataDeClau(primersDies[primersDies.length - 1]);
@@ -259,17 +265,19 @@
       for (let d = 0; d < DURADA_REGLA; d++) {
         const dia = new Date(iniciCicle.getTime() + d * 86400000);
         const clau = clauData(dia);
-        if (!dades[clau]) dades[clau] = 'periode-predit';
+        if (!dades[clau]) dades[clau] = [];
+        if (!Array.isArray(dades[clau])) dades[clau] = [dades[clau]];
+        if (!dades[clau].includes('periode-predit')) dades[clau].push('periode-predit');
       }
     }
   }
 
   function calcularFaseCicle() {
-    const diesPeriode = Object.keys(dades).filter(c => dades[c] === 'periode').sort();
+    const diesPeriode = Object.keys(dades).filter(c => tensDias(c).includes('periode')).sort();
     if (diesPeriode.length === 0) return null;
     const primersDies = diesPeriode.filter(clau => {
       const anterior = new Date(dataDeClau(clau).getTime() - 86400000);
-      return dades[clauData(anterior)] !== 'periode';
+      return !tensDias(clauData(anterior)).includes('periode');
     });
     if (primersDies.length === 0) return null;
     const ultimPrimer = dataDeClau(primersDies[primersDies.length - 1]);
@@ -294,7 +302,11 @@
       if (!r.ok) throw new Error(await r.text());
       const rows = await r.json();
       dades = {};
-      rows.forEach(row => { dades[row.data] = row.tipus; });
+      rows.forEach(row => {
+        if (!dades[row.data]) dades[row.data] = [];
+        if (!Array.isArray(dades[row.data])) dades[row.data] = [dades[row.data]];
+        dades[row.data].push(row.tipus);
+      });
       calcularPrediccions();
       renderTot();
     } catch (e) {
@@ -306,17 +318,16 @@
   async function registrar(tipus) {
     if (!diaSeleccionat) { setStatus('Selecciona primer un dia', 'error'); return; }
     setStatus('Guardant...');
-    const tipusActual = dades[diaSeleccionat];
-    const existeixBD = tipusActual && tipusActual !== 'periode-predit';
     try {
-      if (existeixBD) {
-        const r = await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&data=eq.' + diaSeleccionat, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ tipus }) });
-        if (!r.ok) throw new Error(await r.text());
-      } else {
-        const r = await fetch(SUPA_URL + '/rest/v1/registres', { method: 'POST', headers: HEADERS, body: JSON.stringify({ user_id: usuariActual, data: diaSeleccionat, tipus }) });
-        if (!r.ok) throw new Error(await r.text());
-      }
-      dades[diaSeleccionat] = tipus;
+      const tipos = tensDias(diaSeleccionat);
+      if (tipos.includes(tipus)) { setStatus('Ja està registrat', 'error'); return; }
+      
+      tipos.push(tipus);
+      tipos.filter(t => t !== 'periode-predit').forEach(t => {
+        fetch(SUPA_URL + '/rest/v1/registres', { method: 'POST', headers: HEADERS, body: JSON.stringify({ user_id: usuariActual, data: diaSeleccionat, tipus: t }) });
+      });
+
+      dades[diaSeleccionat] = tipos;
       calcularPrediccions();
       setStatus('Guardat! ✓', 'ok');
       renderTot();
@@ -326,12 +337,11 @@
 
   async function esborrar() {
     if (!diaSeleccionat) return;
-    const tipusActual = dades[diaSeleccionat];
-    if (!tipusActual || tipusActual === 'periode-predit') { setStatus('No hi ha res a esborrar', 'error'); return; }
+    const tipos = tensDias(diaSeleccionat);
+    if (tipos.length === 0) { setStatus('No hi ha res a esborrar', 'error'); return; }
     setStatus('Esborrant...');
     try {
-      const r = await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&data=eq.' + diaSeleccionat, { method: 'DELETE', headers: HEADERS });
-      if (!r.ok) throw new Error(await r.text());
+      await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&data=eq.' + diaSeleccionat, { method: 'DELETE', headers: HEADERS });
       delete dades[diaSeleccionat];
       calcularPrediccions();
       setStatus('Esborrat! ✓', 'ok');
@@ -347,11 +357,12 @@
   function seleccionarDia(clau) {
     diaSeleccionat = clau;
     const [any, mes, dia] = clau.split('-');
-    const tipus = dades[clau];
-    let etiqueta = 'sense registre';
-    if (tipus === 'intim') etiqueta = 'Trobada íntima';
-    else if (tipus === 'periode') etiqueta = 'Dia de període';
-    else if (tipus === 'periode-predit') etiqueta = '🔮 Període predit';
+    const tipos = tensDias(clau);
+    let etiquetes = [];
+    if (tipos.includes('intim')) etiquetes.push('Trobada íntima');
+    if (tipos.includes('periode')) etiquetes.push('Dia de període');
+    if (tipos.includes('periode-predit')) etiquetes.push('Període predit');
+    const etiqueta = etiquetes.length > 0 ? etiquetes.join(' + ') : 'sense registre';
     document.getElementById('sel-info').textContent = dia + '/' + mes + '/' + any + ' — ' + etiqueta;
     renderCalendari();
   }
@@ -371,10 +382,12 @@
       const el = document.createElement('div');
       el.className = 'cal-day';
       if (clau === clauData(avui)) el.classList.add('today');
-      const tipus = dades[clau];
-      if (tipus === 'intim') el.classList.add('dia-intim');
-      else if (tipus === 'periode') el.classList.add('dia-periode');
-      else if (tipus === 'periode-predit') el.classList.add('dia-predit');
+      const tipos = tensDias(clau);
+      const teIntim = tipos.includes('intim');
+      const tePerioide = tipos.includes('periode') || tipos.includes('periode-predit');
+      if (teIntim && tePerioide) { el.classList.add('dia-intim', 'dia-ambos'); }
+      else if (teIntim) { el.classList.add('dia-intim'); }
+      else if (tePerioide) { el.classList.add('dia-periode'); }
       if (clau === diaSeleccionat) el.classList.add('selected');
       const numEl = document.createElement('span'); numEl.textContent = d; el.appendChild(numEl);
       el.onclick = () => seleccionarDia(clau);
@@ -387,8 +400,8 @@
     const anyActual = avui.getFullYear();
     let mesCont = 0, anyCont = 0;
 
-    for (const [clau, tipus] of Object.entries(dades)) {
-      if (tipus === 'intim') {
+    for (const [clau, tipos] of Object.entries(dades)) {
+      if (tensDias(clau).includes('intim')) {
         const [y, m] = clau.split('-').map(Number);
         if (clau.startsWith(clauMes)) mesCont++;
         if (y === anyActual) anyCont++;
@@ -396,18 +409,18 @@
     }
 
     const mesesAmbDades = new Set();
-    for (const [clau, tipus] of Object.entries(dades)) {
-      if (tipus === 'intim') {
+    for (const [clau, tipos] of Object.entries(dades)) {
+      if (tensDias(clau).includes('intim')) {
         const [y, m] = clau.split('-');
         mesesAmbDades.add(y + '-' + m);
       }
     }
-    const trobades = Object.keys(dades).filter(c => dades[c] === 'intim').length;
+    const trobades = Object.keys(dades).filter(c => tensDias(c).includes('intim')).length;
     const mitjana = mesesAmbDades.size > 0 ? (trobades / mesesAmbDades.size).toFixed(1) : '—';
 
     const diesSetmanaTrobades = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0 };
-    for (const [clau, tipus] of Object.entries(dades)) {
-      if (tipus === 'intim') {
+    for (const [clau, tipos] of Object.entries(dades)) {
+      if (tensDias(clau).includes('intim')) {
         const data = dataDeClau(clau);
         diesSetmanaTrobades[data.getDay()]++;
       }
@@ -432,11 +445,11 @@
   function renderProperaRegla() {
     const box = document.getElementById('propera-regla-box');
     const avuiClau = clauData(avui);
-    const predits = Object.keys(dades).filter(c => dades[c] === 'periode-predit' && c >= avuiClau).sort();
+    const predits = Object.keys(dades).filter(c => tensDias(c).includes('periode-predit') && c >= avuiClau).sort();
     if (predits.length === 0) { box.style.display = 'none'; return; }
     const primerPredit = predits[0];
     const anterior = new Date(dataDeClau(primerPredit).getTime() - 86400000);
-    const esPrimer = dades[clauData(anterior)] !== 'periode-predit';
+    const esPrimer = !tensDias(clauData(anterior)).includes('periode-predit');
     if (!esPrimer) { box.style.display = 'none'; return; }
     const data = dataDeClau(primerPredit);
     const avuiMs = new Date(avui.getFullYear(), avui.getMonth(), avui.getDate());
@@ -473,10 +486,10 @@
       const d = new Date(mesChartActual.getFullYear(), mesChartActual.getMonth() - i, 1);
       const clauMes = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
       let count = 0;
-      for (const [clau, tipus] of Object.entries(dades)) { if (clau.startsWith(clauMes) && tipus === 'intim') count++; }
+      for (const [clau, tipos] of Object.entries(dades)) { if (clau.startsWith(clauMes) && tensDias(clau).includes('intim')) count++; }
       const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
-      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 ? count : '';
-      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#D4537E'; bar.style.height = count > 0 ? Math.max(count * 12, 4) + 'px' : '3px'; bar.style.opacity = i === 0 ? '1' : '0.5';
+      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 && count <= 9 ? count : (count > 9 ? '9+' : '');
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#D4537E'; bar.style.height = count > 0 ? Math.max(count * 1.5, 2) + 'px' : '1px'; bar.style.opacity = i === 0 ? '1' : '0.5';
       const lbl = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = mesos[d.getMonth()].substring(0, 3);
       wrap.appendChild(num); wrap.appendChild(bar); wrap.appendChild(lbl); container.appendChild(wrap);
     }
@@ -488,13 +501,13 @@
     for (let i = 5; i >= 0; i--) {
       const any = anyChartActual.getFullYear() - i;
       let count = 0;
-      for (const [clau, tipus] of Object.entries(dades)) { 
+      for (const [clau, tipos] of Object.entries(dades)) { 
         const y = parseInt(clau.split('-')[0]);
-        if (y === any && tipus === 'intim') count++;
+        if (y === any && tensDias(clau).includes('intim')) count++;
       }
       const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
-      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 ? count : '';
-      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#8b5cf6'; bar.style.height = count > 0 ? Math.max(count * 3, 4) + 'px' : '3px'; bar.style.opacity = i === 0 ? '1' : '0.5';
+      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 && count <= 99 ? count : (count > 99 ? '99+' : '');
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#8b5cf6'; bar.style.height = count > 0 ? Math.max(count * 0.25, 2) + 'px' : '1px'; bar.style.opacity = i === 0 ? '1' : '0.5';
       const lbl = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = any;
       wrap.appendChild(num); wrap.appendChild(bar); wrap.appendChild(lbl); container.appendChild(wrap);
     }
@@ -502,13 +515,15 @@
 
   function renderLog() {
     const list = document.getElementById('log-list');
-    const entrades = Object.entries(dades).filter(([, t]) => t !== 'periode-predit').sort((a, b) => b[0].localeCompare(a[0])).slice(0, 15);
+    const entrades = Object.entries(dades).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 15);
     if (entrades.length === 0) { list.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:16px 0">Sense registres encara</div>'; return; }
     const etiquetes = { intim: 'Trobada íntima', periode: 'Dia de període' };
     const colors = { intim: '#16a34a', periode: '#dc2626' };
-    list.innerHTML = entrades.map(([clau, tipus]) => {
+    list.innerHTML = entrades.map(([clau, tipos]) => {
       const [any, mes, dia] = clau.split('-');
-      return `<div class="log-item"><div class="log-badge" style="background:${colors[tipus]||'#94a3b8'}"></div><div class="log-text">${etiquetes[tipus]||tipus}</div><div class="log-date">${dia}/${mes}/${any}</div></div>`;
+      const tiposStr = tensDias(clau).filter(t => t !== 'periode-predit').map(t => etiquetes[t]).join(' + ');
+      const colorUsed = tensDias(clau).includes('intim') ? colors['intim'] : colors['periode'];
+      return `<div class="log-item"><div class="log-badge" style="background:${colorUsed}"></div><div class="log-text">${tiposStr}</div><div class="log-date">${dia}/${mes}/${any}</div></div>`;
     }).join('');
   }
 
@@ -516,25 +531,20 @@
     const clau = clauData(avui);
     const btn = document.getElementById('btn-avui');
     const info = document.getElementById('status-avui');
-    if (dades[clau] === 'intim') { btn.textContent = '✓ Ja registrat avui!'; btn.classList.add('ja-registrat'); info.textContent = 'Trobada registrada per avui'; }
+    if (tensDias(clau).includes('intim')) { btn.textContent = '✓ Ja registrat avui!'; btn.classList.add('ja-registrat'); info.textContent = 'Trobada registrada per avui'; }
     else { btn.textContent = '❤️ Trobada avui!'; btn.classList.remove('ja-registrat'); info.textContent = ''; }
   }
 
   async function registrarAvui() {
     const clau = clauData(avui);
-    if (dades[clau] === 'intim') { document.getElementById('status-avui').textContent = 'Ja estava registrat!'; return; }
+    if (tensDias(clau).includes('intim')) { document.getElementById('status-avui').textContent = 'Ja estava registrat!'; return; }
     const btn = document.getElementById('btn-avui');
     btn.textContent = 'Guardant...';
     try {
-      const existeixBD = dades[clau] && dades[clau] !== 'periode-predit';
-      if (existeixBD) {
-        const r = await fetch(SUPA_URL + '/rest/v1/registres?user_id=eq.' + usuariActual + '&data=eq.' + clau, { method: 'PATCH', headers: HEADERS, body: JSON.stringify({ tipus: 'intim' }) });
-        if (!r.ok) throw new Error(await r.text());
-      } else {
-        const r = await fetch(SUPA_URL + '/rest/v1/registres', { method: 'POST', headers: HEADERS, body: JSON.stringify({ user_id: usuariActual, data: clau, tipus: 'intim' }) });
-        if (!r.ok) throw new Error(await r.text());
-      }
-      dades[clau] = 'intim';
+      await fetch(SUPA_URL + '/rest/v1/registres', { method: 'POST', headers: HEADERS, body: JSON.stringify({ user_id: usuariActual, data: clau, tipus: 'intim' }) });
+      const tipos = tensDias(clau);
+      tipos.push('intim');
+      dades[clau] = tipos;
       calcularPrediccions();
       renderTot();
     } catch (e) { btn.textContent = '❤️ Trobada avui!'; document.getElementById('status-avui').textContent = 'Error: ' + e.message; }
