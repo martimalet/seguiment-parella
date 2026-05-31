@@ -59,11 +59,11 @@
     .chart-nav button { background: none; border: 1px solid #e2e8f0; border-radius: 6px; padding: 3px 8px; cursor: pointer; color: #1e293b; font-size: 12px; }
     .chart-nav button:hover { background: #f1f5f9; }
     .chart-wrapper { width: 100%; overflow-x: auto; }
-    .chart-bars { display: flex; align-items: flex-end; gap: 2px; height: 70px; min-width: min-content; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 2px; min-height: 70px; min-width: min-content; }
     .bar-wrap { flex: 0 0 calc(100% / 6 - 2px); display: flex; flex-direction: column; align-items: center; gap: 0px; }
-    .bar-num { font-size: 6px; color: #0f172a; font-weight: 600; height: 6px; line-height: 6px; }
+    .bar-num { font-size: 8px; color: #0f172a; font-weight: 700; height: auto; line-height: 1; min-height: 10px; }
     .bar { width: 100%; border-radius: 2px 2px 0 0; min-height: 1px; transition: height 0.4s; }
-    .bar-label { font-size: 6px; color: #94a3b8; text-align: center; margin-top: 1px; }
+    .bar-label { font-size: 8px; color: #94a3b8; text-align: center; margin-top: 2px; }
     .status { font-size: 12px; color: #64748b; text-align: center; padding: 6px 0; min-height: 24px; }
     .status.error { color: #dc2626; }
     .status.ok { color: #16a34a; }
@@ -482,6 +482,7 @@
   function renderChartMesos() {
     const container = document.getElementById('chart-bars-mesos');
     container.innerHTML = '';
+    container.style.height = '70px';
     let maxCount = 0;
     const datos = [];
     for (let i = 5; i >= 0; i--) {
@@ -492,12 +493,12 @@
       datos.push({ d, clauMes, count });
       maxCount = Math.max(maxCount, count);
     }
-    const maxHeight = 20;
+    const maxHeight = 55;
     const scale = maxCount > 0 ? maxHeight / maxCount : 1;
     datos.forEach(({ d, clauMes, count }, idx) => {
       const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
-      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 ? count : '';
-      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#D4537E'; bar.style.height = count > 0 ? Math.max(count * scale, 2) + 'px' : '1px'; bar.style.opacity = idx === datos.length - 1 ? '1' : '0.5';
+      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count;
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#D4537E'; bar.style.height = count > 0 ? Math.max(count * scale, 3) + 'px' : '2px'; bar.style.opacity = idx === datos.length - 1 ? '1' : '0.5';
       const lbl = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = mesos[d.getMonth()].substring(0, 3);
       wrap.appendChild(num); wrap.appendChild(bar); wrap.appendChild(lbl); container.appendChild(wrap);
     });
@@ -506,6 +507,7 @@
   function renderChartAnys() {
     const container = document.getElementById('chart-bars-anys');
     container.innerHTML = '';
+    container.style.height = '180px';
     let maxCount = 0;
     const datos = [];
     for (let i = 5; i >= 0; i--) {
@@ -518,12 +520,12 @@
       datos.push({ any, count });
       maxCount = Math.max(maxCount, count);
     }
-    const maxHeight = 150;
+    const maxHeight = 160;
     const scale = maxCount > 0 ? maxHeight / maxCount : 1;
     datos.forEach(({ any, count }, idx) => {
       const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
-      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 ? count : '';
-      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#8b5cf6'; bar.style.height = count > 0 ? Math.max(count * scale, 2) + 'px' : '1px'; bar.style.opacity = idx === datos.length - 1 ? '1' : '0.5';
+      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count;
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#8b5cf6'; bar.style.height = count > 0 ? Math.max(count * scale, 3) + 'px' : '2px'; bar.style.opacity = idx === datos.length - 1 ? '1' : '0.5';
       const lbl = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = any;
       wrap.appendChild(num); wrap.appendChild(bar); wrap.appendChild(lbl); container.appendChild(wrap);
     });
