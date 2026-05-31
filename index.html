@@ -90,11 +90,11 @@
 <body>
 <div class="app">
   <div class="header">
-    <h1>❤️ Seguiment Parella</h1>
+    <h1>💛 Sexy Dates 💛</h1>
     <div class="live-badge">☁️ Connectat a Supabase</div>
   </div>
 
-  <button class="btn-avui" id="btn-avui" onclick="registrarAvui()">❤️ Trobada avui!</button>
+  <button class="btn-avui" id="btn-avui" onclick="registrarAvui()">🤩 Avui he tingut sort! 🤩</button>
   <div class="status-avui" id="status-avui"></div>
 
   <div id="propera-regla-box" style="display:none" class="propera-regla"></div>
@@ -482,22 +482,32 @@
   function renderChartMesos() {
     const container = document.getElementById('chart-bars-mesos');
     container.innerHTML = '';
+    let maxCount = 0;
+    const datos = [];
     for (let i = 5; i >= 0; i--) {
       const d = new Date(mesChartActual.getFullYear(), mesChartActual.getMonth() - i, 1);
       const clauMes = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
       let count = 0;
       for (const [clau, tipos] of Object.entries(dades)) { if (clau.startsWith(clauMes) && tensDias(clau).includes('intim')) count++; }
+      datos.push({ d, clauMes, count });
+      maxCount = Math.max(maxCount, count);
+    }
+    const maxHeight = 20;
+    const scale = maxCount > 0 ? maxHeight / maxCount : 1;
+    datos.forEach(({ d, clauMes, count }, idx) => {
       const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
-      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 && count <= 9 ? count : (count > 9 ? '9+' : '');
-      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#D4537E'; bar.style.height = count > 0 ? Math.max(count * 1.5, 2) + 'px' : '1px'; bar.style.opacity = i === 0 ? '1' : '0.5';
+      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 ? count : '';
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#D4537E'; bar.style.height = count > 0 ? Math.max(count * scale, 2) + 'px' : '1px'; bar.style.opacity = idx === datos.length - 1 ? '1' : '0.5';
       const lbl = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = mesos[d.getMonth()].substring(0, 3);
       wrap.appendChild(num); wrap.appendChild(bar); wrap.appendChild(lbl); container.appendChild(wrap);
-    }
+    });
   }
 
   function renderChartAnys() {
     const container = document.getElementById('chart-bars-anys');
     container.innerHTML = '';
+    let maxCount = 0;
+    const datos = [];
     for (let i = 5; i >= 0; i--) {
       const any = anyChartActual.getFullYear() - i;
       let count = 0;
@@ -505,12 +515,18 @@
         const y = parseInt(clau.split('-')[0]);
         if (y === any && tensDias(clau).includes('intim')) count++;
       }
+      datos.push({ any, count });
+      maxCount = Math.max(maxCount, count);
+    }
+    const maxHeight = 150;
+    const scale = maxCount > 0 ? maxHeight / maxCount : 1;
+    datos.forEach(({ any, count }, idx) => {
       const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
-      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 && count <= 99 ? count : (count > 99 ? '99+' : '');
-      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#8b5cf6'; bar.style.height = count > 0 ? Math.max(count * 0.25, 2) + 'px' : '1px'; bar.style.opacity = i === 0 ? '1' : '0.5';
+      const num = document.createElement('div'); num.className = 'bar-num'; num.textContent = count > 0 ? count : '';
+      const bar = document.createElement('div'); bar.className = 'bar'; bar.style.background = '#8b5cf6'; bar.style.height = count > 0 ? Math.max(count * scale, 2) + 'px' : '1px'; bar.style.opacity = idx === datos.length - 1 ? '1' : '0.5';
       const lbl = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = any;
       wrap.appendChild(num); wrap.appendChild(bar); wrap.appendChild(lbl); container.appendChild(wrap);
-    }
+    });
   }
 
   function renderLog() {
@@ -532,7 +548,7 @@
     const btn = document.getElementById('btn-avui');
     const info = document.getElementById('status-avui');
     if (tensDias(clau).includes('intim')) { btn.textContent = '✓ Ja registrat avui!'; btn.classList.add('ja-registrat'); info.textContent = 'Trobada registrada per avui'; }
-    else { btn.textContent = '❤️ Trobada avui!'; btn.classList.remove('ja-registrat'); info.textContent = ''; }
+    else { btn.textContent = '🤩 Avui he tingut sort! 🤩'; btn.classList.remove('ja-registrat'); info.textContent = ''; }
   }
 
   async function registrarAvui() {
@@ -547,7 +563,7 @@
       dades[clau] = tipos;
       calcularPrediccions();
       renderTot();
-    } catch (e) { btn.textContent = '❤️ Trobada avui!'; document.getElementById('status-avui').textContent = 'Error: ' + e.message; }
+    } catch (e) { btn.textContent = '🤩 Avui he tingut sort! 🤩'; document.getElementById('status-avui').textContent = 'Error: ' + e.message; }
   }
 
   function renderTot() {
